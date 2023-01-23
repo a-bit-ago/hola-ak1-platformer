@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class CameraPosition : MonoBehaviour
 {
-
     [SerializeField] private Transform player;
-
-    void Start() {}
+    [SerializeField] private Vector2 cameraLocalPos;
 
     void Update()
     {
