@@ -57,6 +57,7 @@ public class Player : MonoBehaviour
         UpdateAnimations();
         CheckMovementDirection();
         CheckIfCanJump();
+        CheckIfWallSliding();
     }
 
     void FixedUpdate()
@@ -118,9 +119,11 @@ public class Player : MonoBehaviour
 
     void ApplyMovement()
     {
+        var velocityY = _body.velocity.y;
+
         if (_isGrounded)
         {
-            _body.velocity = new Vector2(runSpeed * _movementInputDirection, _body.velocity.y);
+            _body.velocity = new Vector2(runSpeed * _movementInputDirection, velocityY);
         }
         else if (!_isGrounded && !_isWallSliding && _movementInputDirection == 0)
         {
@@ -129,12 +132,12 @@ public class Player : MonoBehaviour
 
             if (Mathf.Abs(_body.velocity.x) > runSpeed)
             {
-                _body.velocity = new Vector2(runSpeed * _movementInputDirection, _body.velocity.y);
+                _body.velocity = new Vector2(runSpeed * _movementInputDirection, velocityY);
             }
         }
         else if (!_isGrounded && !_isWallSliding && _movementInputDirection == 0)
         {
-            var forceToBeAdded = new Vector2(_body.velocity.x * variableAirDragMultiplier, _body.velocity.y);
+            var forceToBeAdded = new Vector2(_body.velocity.x * variableAirDragMultiplier, velocityY);
             _body.AddForce(forceToBeAdded);
         }
         
@@ -164,6 +167,18 @@ public class Player : MonoBehaviour
         else
         {
             _canJump = true;
+        }
+    }
+
+    void CheckIfWallSliding()
+    {
+        if (_isTouchingWall && !_isGrounded && _body.velocity.y < 0)
+        {
+            _isWallSliding = true;
+        }
+        else
+        {
+            _isWallSliding = false;
         }
     }
 
